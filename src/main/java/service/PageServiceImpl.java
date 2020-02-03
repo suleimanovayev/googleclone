@@ -2,7 +2,10 @@ package service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import model.Page;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -30,6 +33,7 @@ import repository.PageRepository;
 
 @Service
 public class PageServiceImpl implements PageService {
+    private static Set<String> set = new HashSet<>();
     private static int level = 2;
 
     @Autowired
@@ -88,8 +92,10 @@ public class PageServiceImpl implements PageService {
 
         for (Element elem : elements) {
             String absHref = elem.attr("abs:href");
+            if(set.contains(absHref)) {
+                continue;
+            }
             save(absHref);
         }
     }
 }
-
