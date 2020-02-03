@@ -4,7 +4,7 @@
     <title>Page3</title>
 </head>
 <body>
-<form action="${pageContext.request.contextPath}//search" method="post">
+<form action="${pageContext.request.contextPath}/search" method="post">
     <div class="container">
         <label for="text"><b>Text</b></label>
         <input type="text" placeholder="Enter text" name="query" required>

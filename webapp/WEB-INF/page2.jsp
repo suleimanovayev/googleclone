@@ -5,6 +5,6 @@
 </head>
 <body>
 <h1>Index!</h1>
-<a href="/googlecloneg_war_exploded/">Page3</a>
+<a href="${pageContext.request.contextPath}">Page3</a>
 </body>
 </html>
