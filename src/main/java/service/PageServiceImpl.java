@@ -45,7 +45,7 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public void save(String url) throws IOException {
-
+        set.add(url);
         org.jsoup.nodes.Document doc = Jsoup.connect(url).get();
         String body = doc.body().text().toLowerCase();
         String title = doc.title();
@@ -92,7 +92,7 @@ public class PageServiceImpl implements PageService {
 
         for (Element elem : elements) {
             String absHref = elem.attr("abs:href");
-            if(set.contains(absHref)) {
+            if (set.contains(absHref)) {
                 continue;
             }
             save(absHref);
