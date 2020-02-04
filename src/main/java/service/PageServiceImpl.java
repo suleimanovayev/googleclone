@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import model.Page;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -47,11 +46,25 @@ public class PageServiceImpl implements PageService {
     public void save(String url) throws IOException {
         set.add(url);
         org.jsoup.nodes.Document doc = Jsoup.connect(url).get();
+
         String body = doc.body().text().toLowerCase();
         String title = doc.title();
         createIndex(url, title, body);
         pageRepository.save(new Page(url, title, body));
-        getPageLinks(doc);
+
+        level--;
+        if (level < 1) {
+            return;
+        }
+        Elements elements = doc.select("a[href]");
+
+        for (Element elem : elements) {
+            String absHref = elem.attr("abs:href");
+            if (set.contains(absHref)) {
+                continue;
+            }
+            save(absHref);
+        }
     }
 
     public void createIndex(String url, String title, String body) throws IOException {
@@ -81,21 +94,5 @@ public class PageServiceImpl implements PageService {
             documents.add(searcher.doc(scoreDoc.doc));
         }
         return documents;
-    }
-
-    public void getPageLinks(org.jsoup.nodes.Document document) throws IOException {
-        Elements elements = document.select("a[href]");
-        level--;
-        if (level < 1) {
-            return;
-        }
-
-        for (Element elem : elements) {
-            String absHref = elem.attr("abs:href");
-            if (set.contains(absHref)) {
-                continue;
-            }
-            save(absHref);
-        }
     }
 }
