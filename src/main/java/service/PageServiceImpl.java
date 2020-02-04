@@ -34,7 +34,7 @@ import repository.PageRepository;
 @Service
 public class PageServiceImpl implements PageService {
     private static Set<String> set = new HashSet<>();
-    private static int level = 2;
+    private int level = 2;
 
     @Autowired
     private PageRepository pageRepository;
