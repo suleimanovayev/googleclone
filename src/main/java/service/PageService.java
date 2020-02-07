@@ -1,14 +1,15 @@
 package service;
 
 import java.io.IOException;
-import java.util.List;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.queryparser.classic.ParseException;
+import java.util.Set;
+import model.Page;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface PageService {
     void save(String url) throws IOException;
 
-    List<Document> search(String inField, String queryString) throws ParseException, IOException;
+    Set<Page> pagination(String sortOrder, String sortBy,
+                         Integer pageNo, Integer pageSize, String query);
 
-    void createIndex(String url, String title, String body) throws IOException;
 }

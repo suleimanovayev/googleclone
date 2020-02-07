@@ -2,6 +2,9 @@ package config;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +33,6 @@ public class AppConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-
         LocalContainerEntityManagerFactoryBean factory =
                 new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
@@ -45,5 +47,15 @@ public class AppConfig {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
+    }
+
+    @Bean
+    public StandardAnalyzer analyzer() {
+        return new StandardAnalyzer();
+    }
+
+    @Bean
+    public Directory memoryIndex() {
+        return new RAMDirectory();
     }
 }
