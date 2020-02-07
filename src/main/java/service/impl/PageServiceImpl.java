@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import model.Page;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +20,12 @@ import org.springframework.stereotype.Service;
 import repository.PageRepository;
 import service.LuceneService;
 import service.PageService;
+import thread.NextPage;
 
 @Service
 public class PageServiceImpl implements PageService {
+    private static final ExecutorService EXECUTOR_SERVICE =
+            Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private int level = 2;
 
     private final Logger log = Logger.getLogger("PageServiceImpl.class");
@@ -38,6 +42,10 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public void save(String url) {
+        if (set.contains(url)) {
+            return;
+
+        }
         set.add(url);
         org.jsoup.nodes.Document doc = null;
         try {
@@ -55,20 +63,14 @@ public class PageServiceImpl implements PageService {
             log.warn("Can't create index!");
             return;
         }
+
         pageRepository.save(new Page(url, title, body));
 
-        level--;
-        if (level < 1) {
-            return;
-        }
         Elements elements = doc.select("a[href]");
 
-        for (Element elem : elements) {
-            String absHref = elem.attr("abs:href");
-            if (set.contains(absHref)) {
-                continue;
-            }
-            save(absHref);
+        if (level > 0) {
+            level--;
+            EXECUTOR_SERVICE.execute(new NextPage(elements, this));
         }
     }
 
