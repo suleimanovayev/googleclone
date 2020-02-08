@@ -1,12 +1,15 @@
 package thread;
 
 import java.io.IOException;
+
 import lombok.SneakyThrows;
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import service.PageService;
 
 public class NextPage implements Runnable {
+    private Logger log = Logger.getLogger("NextPage.class");
 
     private PageService pageService;
     private Elements links;
@@ -23,7 +26,7 @@ public class NextPage implements Runnable {
             try {
                 pageService.save(element.attr("abs:href"));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn("Cant find URL ", e);
             }
         }
     }
