@@ -28,7 +28,7 @@ public class PageServiceImpl implements PageService {
             Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private int level = 2;
 
-    private final Logger log = Logger.getLogger("PageServiceImpl.class");
+    private final Logger log = Logger.getLogger(PageServiceImpl.class);
     private Set<String> set = new HashSet<>();
 
     private PageRepository pageRepository;

@@ -25,7 +25,7 @@ import service.LuceneService;
 
 @Service
 public class LuceneServiceImpl implements LuceneService {
-    private Logger log = Logger.getLogger("LuceneServiceImpl.class");
+    private Logger log = Logger.getLogger(LuceneService.class);
 
     private StandardAnalyzer analyzer;
     private Directory memoryIndex;

@@ -13,7 +13,7 @@ import service.PageService;
 @Controller
 @RequestMapping("/index")
 public class IndexController {
-    private Logger log = Logger.getLogger("IndexController.class");
+    private Logger log = Logger.getLogger(IndexController.class);
     private PageService pageService;
 
     @Autowired

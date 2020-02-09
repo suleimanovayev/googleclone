@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 import service.PageService;
 
 public class NextPage implements Runnable {
-    private Logger log = Logger.getLogger("NextPage.class");
+    private Logger log = Logger.getLogger(NextPage.class);
 
     private PageService pageService;
     private Elements links;
