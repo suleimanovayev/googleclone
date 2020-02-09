@@ -43,27 +43,19 @@ public class LuceneServiceImpl implements LuceneService {
         document.add(new TextField("url", url, Field.Store.YES));
         document.add(new TextField("title", title, Field.Store.YES));
         document.add(new TextField("body", body, Field.Store.YES));
-        IndexWriter writer = null;
-        try {
-            writer = new IndexWriter(memoryIndex, indexWriterConfig);
-        } catch (IOException e) {
-            log.error("Cant create index", e);
-        }
-        try {
+
+        try (IndexWriter writer = new IndexWriter(memoryIndex, indexWriterConfig)) {
             writer.addDocument(document);
         } catch (IOException e) {
-            log.error("Cant add document", e);
-        }
-        try {
-            writer.close();
-        } catch (IOException e) {
-            log.error("Writer not closed", e);
+            log.warn("Cant create index", e);
         }
     }
 
     @Override
     public List<Document> search(String inField, String queryString) {
         Query query = null;
+        TopDocs topDocs = null;
+
         try {
             query = new QueryParser(inField, analyzer)
                     .parse(queryString);
@@ -71,20 +63,14 @@ public class LuceneServiceImpl implements LuceneService {
             log.warn("Cant get query");
         }
 
-        IndexReader indexReader = null;
-        try {
-            indexReader = DirectoryReader.open(memoryIndex);
-        } catch (IOException e) {
-            log.error("Cant read index");
-        }
+        IndexSearcher searcher = null;
 
-        IndexSearcher searcher = new IndexSearcher(indexReader);
-
-        TopDocs topDocs = null;
         try {
+            IndexReader  indexReader = DirectoryReader.open(memoryIndex);
+            searcher = new IndexSearcher(indexReader);
             topDocs = searcher.search(query, 10);
         } catch (IOException e) {
-            log.warn("Cant find by query");
+            log.error("Cant read index");
         }
 
         List<Document> documents = new ArrayList<>();

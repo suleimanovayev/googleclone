@@ -44,27 +44,20 @@ public class PageServiceImpl implements PageService {
     public void save(String url) {
         if (set.contains(url)) {
             return;
-
         }
         set.add(url);
         org.jsoup.nodes.Document doc = null;
+
         try {
             doc = Jsoup.connect(url).get();
+            String body = doc.body().text().toLowerCase();
+            String title = doc.title();
+            luceneService.createIndex(url, title, body);
+            pageRepository.save(new Page(url, title, body));
         } catch (IOException e) {
             log.warn("Can't get document!");
             return;
         }
-
-        String body = doc.body().text().toLowerCase();
-        String title = doc.title();
-        try {
-            luceneService.createIndex(url, title, body);
-        } catch (IOException e) {
-            log.warn("Can't create index!");
-            return;
-        }
-
-        pageRepository.save(new Page(url, title, body));
 
         Elements elements = doc.select("a[href]");
 
