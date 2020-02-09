@@ -69,11 +69,11 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public Set<Page> pagination(String sortOrder, String sortBy,
-                                Integer pageNo, Integer pageSize, String query) {
+                                Integer offset, Integer size, String query) {
         List<Document> documents;
         Set<Page> pages = new HashSet<>();
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(direction, sortBy));
+        Pageable paging = PageRequest.of(offset, size, Sort.by(direction, sortBy));
         try {
             documents = luceneService.search("body", query);
             for (int i = 0; i < documents.size(); i++) {

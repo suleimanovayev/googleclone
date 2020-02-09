@@ -30,13 +30,13 @@ public class SearchController {
 
     @PostMapping("/search")
     public String search(@RequestParam("query") String query,
-                         @RequestParam(defaultValue = "0") Integer pageNo,
-                         @RequestParam(defaultValue = "10") Integer pageSize,
+                         @RequestParam(defaultValue = "0") Integer offset,
+                         @RequestParam(defaultValue = "10") Integer size,
                          @RequestParam(defaultValue = "title") String sortBy,
                          @RequestParam(value = "sortOrder", required = false,
                                  defaultValue = "asc") String sortOrder,
                          Model model) {
-        Set<Page> pages = pageService.pagination(sortOrder, sortBy, pageNo, pageSize, query);
+        Set<Page> pages = pageService.pagination(sortOrder, sortBy, offset, size, query);
         model.addAttribute("pages", pages);
         return "page4";
     }
